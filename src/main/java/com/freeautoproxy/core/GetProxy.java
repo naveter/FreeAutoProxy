@@ -9,9 +9,8 @@
  * @email: mstorage.project@gmail.com
  * @date: 2017
  */
-package jGetFreeProxyList;
+package com.freeautoproxy.core;
 
-import jGetFreeProxyList.jGetFreeProxyList;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;

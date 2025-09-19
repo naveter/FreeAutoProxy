@@ -1,4 +1,4 @@
-package jGetFreeProxyList;
+package com.freeautoproxy.core;
 
 import java.util.Comparator;
 

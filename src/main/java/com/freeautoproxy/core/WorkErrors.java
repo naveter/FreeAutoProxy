@@ -9,7 +9,7 @@
  * @email: mstorage.project@gmail.com
  * @date: 2017
  */
-package jGetFreeProxyList;
+package com.freeautoproxy.core;
 
 import java.util.ArrayList;
 

@@ -1,5 +1,5 @@
 /*
- * jGetFreeProxyList - to get a list of tested free proxies to java program
+ * FreeAutoProxy - to get a list of tested free proxies to java program
  * 
  * Permission is granted to copy, distribute and/or
  * modify  this  document under  the  terms  of the
@@ -7,11 +7,10 @@
  * 
  * @author: ilya.gulevskiy
  * @email: mstorage.project@gmail.com
- * @date: 2017
+ * @date: 2025
  */
-package jGetFreeProxyList;
+package com.freeautoproxy.core;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -26,7 +25,7 @@ class Dev {
     }
     
     /** Switch on debug regime */
-    private static AtomicBoolean EnableDebug = new AtomicBoolean(false);
+    private final static AtomicBoolean EnableDebug = new AtomicBoolean(false);
     
     /** Common log for all messages */
     private static CopyOnWriteArrayList<String> Log = new CopyOnWriteArrayList<>();
@@ -47,7 +46,7 @@ class Dev {
      */
     static void out(String s) {
         Dev.Log.add(s);
-        if (true == Dev.EnableDebug.get()) {
+        if (Dev.EnableDebug.get()) {
             System.out.println(s);
         }
     }
