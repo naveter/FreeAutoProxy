@@ -1,110 +1,119 @@
 package com.freeautoproxy.core;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.*;
 
-/**
- * Class contain settings for library. 
- * Can be adjusted by consumer.
- * 
- * @version 1.1
- */
 public class Settings {
+
+	private String appVersion = "1.1";
+
+    private ArrayList<java.net.URL> testByUrls = new ArrayList<>();
+
+    private ArrayList<InfoUrl> proxyUrls = new ArrayList<>();
+
+    private int amountThreads = 50;
+
+	private int awaitGetProxy = 20;
 	
-	private static String Version = "1.1";
+	private int awaitTestProxy = 600;
+
+    private int capacityProxiesQueue = 50;
+
+    private TimeZone timeZone = Calendar.getInstance().getTimeZone();
+
+    private int urlConnectionTimeOut = 5;
+
+    private String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+
+    private boolean enableDebug = false;
 	
-	/**
-	 * List of public urls to try to connect with proxies. At least 5.
-	 * Every time them will choose randomly.
-	 */
-    public static ArrayList<java.net.URL>  TestByUrls = new ArrayList<>();
-	
-	/**
-	 * List of public urls, where possible to find proxies.
-	 * By default it works with format IP:port. 
-     * But for every InfoUrl you can change rule of parsing.
-     * @see InfoUrl
-	 */
-    public static ArrayList<InfoUrl> GetProxyUrls = new ArrayList<>();
-	
-	/**
-     * How much threads have to be for test proxies.
-     */
-    public static int AmountThreads = 50;
-	
-	/**
-     * How long await end of work GetProxy threads, in seconds.
-     */
-	public static int AwaitGetProxy = 20;
-	
-	/**
-     * How long await end of work TestProxy threads, in seconds.
-     */
-	public static int AwaitTestProxy = 600;
-    
-    /**
-     * Capacity of ProxiesQueue, must be equals or greater than AmountThreads.
-     */
-    public static int CapacityProxiesQueue = 50;
-    
-    /**
-     * TimeZone for current mashine.
-     */
-    public static TimeZone TimeZone = Calendar.getInstance().getTimeZone();
-    
-    /**
-     * How long await when connect to URL, in seconds.
-     */
-    public static int URLConnectionTimeOut = 5;
-    
-    /**
-     * User agent for HTTP query.
-     */
-    public static String UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
-    
-    /**
-     * Whether debug tool is enabled.
-     */
-    public static boolean EnableDebug = false;
-	
-	static {
-		// Fill statements by default
+	public void init() {
+		Properties prop = new Properties();
+		FileInputStream fileInputStream = null;
+
 		try {
-                        
-			TestByUrls.clear();
-			TestByUrls.add(new URL("http://google.com"));
-			TestByUrls.add(new URL("http://www.amazon.com/"));
-			TestByUrls.add(new URL("http://www.yandex.ru/"));
-			TestByUrls.add(new URL("http://edition.cnn.com/"));
-			
-			GetProxyUrls.clear();
-//            GetProxyUrls.add(
-//                new InfoUrl(new URL("http://awmproxy.com/freeproxy.php"))
-//            );
-            
-            // Too big list
-//			GetProxyUrls.add(new InfoUrl(
-//                new URL("http://www.prime-speed.ru/proxy/free-proxy-list/all-working-proxies.php")
-//            ));
-			GetProxyUrls.add(new InfoUrl(new URL("http://samair.ru/proxy/")));
-			GetProxyUrls.add(new InfoUrl(new URL("http://proxydb.net/")));
-			GetProxyUrls.add(
-                new InfoUrl(new URL("https://www.atomintersoft.com/proxy_list_port_80"))
-            );
-            
+
+			fileInputStream = new FileInputStream("config.properties");
+			prop.load(fileInputStream);
+
+			appVersion = prop.getProperty("core.appVersion");
+
+			try {
+				List<String> t1 = Arrays.stream(prop.getProperty("core.testByUrls").split(";")).toList();
+				testByUrls.clear();
+				for (String i : t1) {
+					testByUrls.add(new URL(i));
+				}
+
+				List<String> t2 = Arrays.stream(prop.getProperty("core.proxyUrls").split(";")).toList();
+				proxyUrls.clear();
+                for (String i : t2) {
+					proxyUrls.add(new InfoUrl(new URL(i)));
+                }
+			}
+			catch(MalformedURLException e) {
+				// With that urls it is impossible
+			}
+
+			amountThreads = Integer.getInteger(prop.getProperty("core.amountThreads"));
+			awaitGetProxy = Integer.getInteger(prop.getProperty("core.awaitGetProxy"));
+			awaitTestProxy = Integer.getInteger(prop.getProperty("core.awaitTestProxy"));
+			capacityProxiesQueue = Integer.getInteger(prop.getProperty("core.capacityProxiesQueue"));
+			urlConnectionTimeOut = Integer.getInteger(prop.getProperty("core.urlConnectionTimeOut"));
+			userAgent = prop.getProperty("core.userAgent");
+			enableDebug = Boolean.getBoolean(prop.getProperty("core.enableDebug"));
+
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
 		}
-		catch(MalformedURLException e) {
-			// With that urls it is impossible
-		}
-		
+
 	}
 	
-	public static String getVersion(){
-		return Version;
+	public String getAppVersion() {
+		return appVersion;
+	}
+
+	public ArrayList<URL> getTestByUrls() {
+		return testByUrls;
+	}
+
+	public ArrayList<InfoUrl> getProxyUrls() {
+		return proxyUrls;
+	}
+
+	public int getAmountThreads() {
+		return amountThreads;
+	}
+
+	public int getAwaitGetProxy() {
+		return awaitGetProxy;
+	}
+
+	public int getAwaitTestProxy() {
+		return awaitTestProxy;
+	}
+
+	public int getCapacityProxiesQueue() {
+		return capacityProxiesQueue;
+	}
+
+	public java.util.TimeZone getTimeZone() {
+		return timeZone;
+	}
+
+	public int getUrlConnectionTimeOut() {
+		return urlConnectionTimeOut;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public boolean isEnableDebug() {
+		return enableDebug;
 	}
 	
 }

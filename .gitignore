@@ -25,4 +25,8 @@ replay_pid*
 
 *.iml
 out
+.idea
+
+
+
 
