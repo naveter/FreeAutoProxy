@@ -1,21 +1,7 @@
-/*
- * jGetFreeProxyList - to get a list of tested free proxies to java program
- * 
- * Permission is granted to copy, distribute and/or
- * modify  this  document under  the  terms  of the
- * GNU General Public License
- * 
- * @author: ilya.gulevskiy
- * @email: mstorage.project@gmail.com
- * @date: 2017
- */
 package com.freeautoproxy.core;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -85,7 +71,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class jGetFreeProxyList {
 	
 	/** Queue for threads to test proxies */
-    ArrayBlockingQueue<ProxyItem> ProxiesQueue = new ArrayBlockingQueue(Settings.CapacityProxiesQueue);
+    ArrayBlockingQueue<ProxyItem> ProxiesQueue = new ArrayBlockingQueue(Settings.getCapacityProxiesQueue());
 	
 	/** Map of unique non tested proxies */
     ConcurrentHashMap<String, ProxyItem> RawProxies = new ConcurrentHashMap<>();
@@ -130,7 +116,7 @@ public final class jGetFreeProxyList {
 	 */
     public void run() throws InterruptedException {
         // Enable-disable development tool
-        Dev.setEnableDebug(Settings.EnableDebug);
+        Dev.setEnableDebug(Settings.isEnableDebug());
         
 		this.init();
 		
@@ -139,16 +125,16 @@ public final class jGetFreeProxyList {
 		Future<?> futureExStateControl = this.ExStateControl.submit(new StateControl(this));
         		
 		// Starting threads to get proxies 
-		int cntGetProxyUrls = Settings.GetProxyUrls.size();
+		int cntGetProxyUrls = Settings.getProxyUrls().size();
 		this.ExGetProxy = Executors.newFixedThreadPool(cntGetProxyUrls);
 		
         for(int i = 0; i < cntGetProxyUrls; i++){
-            this.ExGetProxy.submit(new GetProxy(this, Settings.GetProxyUrls.get(i)));
+            this.ExGetProxy.submit(new GetProxy(this, Settings.getProxyUrls().get(i)));
         }
 
 		// Await until all GetProxy threads will ended
 		this.ExGetProxy.shutdown();
-        this.ExGetProxy.awaitTermination(Settings.AwaitGetProxy, TimeUnit.SECONDS);
+        this.ExGetProxy.awaitTermination(Settings.getAwaitGetProxy(), TimeUnit.SECONDS);
 		
 		// If there is alaliable proxies to test
 		if (0 == this.RawProxies.size()) {
@@ -166,8 +152,8 @@ public final class jGetFreeProxyList {
 		Future<?> futureExQueueProducer = this.ExQueueProducer.submit(new QueueProducer(this));
 				
 		// Starting threads to test proxies 
-		this.ExTestProxy = Executors.newFixedThreadPool(Settings.AmountThreads);
-        for(int i = 0; i < Settings.AmountThreads; i++){
+		this.ExTestProxy = Executors.newFixedThreadPool(Settings.getAmountThreads());
+        for(int i = 0; i < Settings.getAmountThreads(); i++){
             this.ExTestProxy.submit(new TestProxy(this));
         }
 		
@@ -177,8 +163,8 @@ public final class jGetFreeProxyList {
         Dev.out("Before awaitTermination");
                 
 		// Await until all TestProxy threads and QueueProducer will ended
-		this.ExTestProxy.awaitTermination(Settings.AwaitTestProxy, TimeUnit.SECONDS);
-		this.ExQueueProducer.awaitTermination(Settings.AwaitTestProxy, TimeUnit.SECONDS);
+		this.ExTestProxy.awaitTermination(Settings.getAwaitTestProxy(), TimeUnit.SECONDS);
+		this.ExQueueProducer.awaitTermination(Settings.getAwaitTestProxy(), TimeUnit.SECONDS);
 				
 		// Stop StateControl
 		this.ExStateControl.shutdown();
@@ -230,13 +216,13 @@ public final class jGetFreeProxyList {
 	 * @throws RuntimeException - if settings is not correct
 	 */
 	private void init() throws RuntimeException{
-		if(0 == Settings.GetProxyUrls.size()) {
+		if(0 == Settings.getProxyUrls().size()) {
 			throw new RuntimeException("GetProxyList has to be defined");
 		}
-		if(0 == Settings.TestByUrls.size()) {
+		if(0 == Settings.getTestByUrls().size()) {
 			throw new RuntimeException("TestByUrls has to be defined");
 		}
-		if (Settings.AmountThreads <= 0) {
+		if (Settings.getAmountThreads() <= 0) {
 			throw new RuntimeException("AmountThreads has to be a positive number");
 		}
         

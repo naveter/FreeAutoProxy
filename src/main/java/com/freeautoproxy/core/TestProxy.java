@@ -1,25 +1,11 @@
-/*
- * jGetFreeProxyList - to get a list of tested free proxies to java program
- * 
- * Permission is granted to copy, distribute and/or
- * modify  this  document under  the  terms  of the
- * GNU General Public License
- * 
- * @author: ilya.gulevskiy
- * @email: mstorage.project@gmail.com
- * @date: 2017
- */
 package com.freeautoproxy.core;
 
-import static jGetFreeProxyList.Settings.TestByUrls;
-import jGetFreeProxyList.jGetFreeProxyList;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 
@@ -54,8 +40,8 @@ class TestProxy extends WorkThread {
             try {
                 
                 java.util.Random randomGenerator = new java.util.Random();
-                int index = randomGenerator.nextInt(Settings.TestByUrls.size())-1;
-                URL iu = Settings.TestByUrls.get(index);
+                int index = randomGenerator.nextInt(Settings.getTestByUrls().size())-1;
+                URL iu = Settings.getTestByUrls().get(index);
                 
                 long start_time = System.currentTimeMillis();
 
@@ -63,8 +49,8 @@ class TestProxy extends WorkThread {
                 HttpURLConnection connection =(HttpURLConnection)iu.openConnection(proxy);
 
                 connection.setRequestProperty("Accept-Charset", "UTF-8");
-                connection.setRequestProperty("User-Agent", Settings.UserAgent);
-                connection.setReadTimeout((Settings.URLConnectionTimeOut*1000));
+                connection.setRequestProperty("User-Agent", Settings.getUserAgent());
+                connection.setReadTimeout((Settings.getUrlConnectionTimeOut()*1000));
                 InputStream response = connection.getInputStream();
 
                 long end_time = System.currentTimeMillis();

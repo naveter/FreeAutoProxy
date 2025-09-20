@@ -8,29 +8,29 @@ import java.util.*;
 
 public class Settings {
 
-	private String appVersion = "1.1";
+	private static String appVersion = "1.1";
 
-    private ArrayList<java.net.URL> testByUrls = new ArrayList<>();
+    private static ArrayList<java.net.URL> testByUrls = new ArrayList<>();
 
-    private ArrayList<InfoUrl> proxyUrls = new ArrayList<>();
+    private static ArrayList<InfoUrl> proxyUrls = new ArrayList<>();
 
-    private int amountThreads = 50;
+    private static int amountThreads = 50;
 
-	private int awaitGetProxy = 20;
+	private static int awaitGetProxy = 20;
 	
-	private int awaitTestProxy = 600;
+	private static int awaitTestProxy = 600;
 
-    private int capacityProxiesQueue = 50;
+    private static int capacityProxiesQueue = 50;
 
-    private TimeZone timeZone = Calendar.getInstance().getTimeZone();
+    private static final TimeZone timeZone = Calendar.getInstance().getTimeZone();
 
-    private int urlConnectionTimeOut = 5;
+    private static int urlConnectionTimeOut = 5;
 
-    private String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
+    private static String userAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36";
 
-    private boolean enableDebug = false;
+    private static boolean enableDebug = false;
 	
-	public void init() {
+	static {
 		Properties prop = new Properties();
 		FileInputStream fileInputStream = null;
 
@@ -42,13 +42,13 @@ public class Settings {
 			appVersion = prop.getProperty("core.appVersion");
 
 			try {
-				List<String> t1 = Arrays.stream(prop.getProperty("core.testByUrls").split(";")).toList();
+				List<String> t1 = Arrays.stream(prop.getProperty("core.TestByUrls").split(";")).toList();
 				testByUrls.clear();
 				for (String i : t1) {
 					testByUrls.add(new URL(i));
 				}
 
-				List<String> t2 = Arrays.stream(prop.getProperty("core.proxyUrls").split(";")).toList();
+				List<String> t2 = Arrays.stream(prop.getProperty("core.GetProxyUrls").split(";")).toList();
 				proxyUrls.clear();
                 for (String i : t2) {
 					proxyUrls.add(new InfoUrl(new URL(i)));
@@ -58,13 +58,14 @@ public class Settings {
 				// With that urls it is impossible
 			}
 
-			amountThreads = Integer.getInteger(prop.getProperty("core.amountThreads"));
-			awaitGetProxy = Integer.getInteger(prop.getProperty("core.awaitGetProxy"));
-			awaitTestProxy = Integer.getInteger(prop.getProperty("core.awaitTestProxy"));
-			capacityProxiesQueue = Integer.getInteger(prop.getProperty("core.capacityProxiesQueue"));
-			urlConnectionTimeOut = Integer.getInteger(prop.getProperty("core.urlConnectionTimeOut"));
-			userAgent = prop.getProperty("core.userAgent");
-			enableDebug = Boolean.getBoolean(prop.getProperty("core.enableDebug"));
+			appVersion = prop.getProperty("core.AppVersion");
+			amountThreads = Integer.parseInt(prop.getProperty("core.AmountThreads"));
+			awaitGetProxy = Integer.parseInt(prop.getProperty("core.AwaitGetProxy"));
+			awaitTestProxy = Integer.parseInt(prop.getProperty("core.AwaitTestProxy"));
+			capacityProxiesQueue = Integer.parseInt(prop.getProperty("core.CapacityProxiesQueue"));
+			urlConnectionTimeOut = Integer.parseInt(prop.getProperty("core.URLConnectionTimeOut"));
+			userAgent = prop.getProperty("core.UserAgent");
+			enableDebug = Boolean.getBoolean(prop.getProperty("core.EnableDebug"));
 
 		} catch (IOException ex) {
 			System.out.println(ex.getMessage());
@@ -72,48 +73,48 @@ public class Settings {
 
 	}
 	
-	public String getAppVersion() {
+	public static String getAppVersion() {
 		return appVersion;
 	}
 
-	public ArrayList<URL> getTestByUrls() {
+	public static ArrayList<URL> getTestByUrls() {
 		return testByUrls;
 	}
 
-	public ArrayList<InfoUrl> getProxyUrls() {
+	public static ArrayList<InfoUrl> getProxyUrls() {
 		return proxyUrls;
 	}
 
-	public int getAmountThreads() {
+	public static int getAmountThreads() {
 		return amountThreads;
 	}
 
-	public int getAwaitGetProxy() {
+	public static int getAwaitGetProxy() {
 		return awaitGetProxy;
 	}
 
-	public int getAwaitTestProxy() {
+	public static int getAwaitTestProxy() {
 		return awaitTestProxy;
 	}
 
-	public int getCapacityProxiesQueue() {
+	public static int getCapacityProxiesQueue() {
 		return capacityProxiesQueue;
 	}
 
-	public java.util.TimeZone getTimeZone() {
+	public static java.util.TimeZone getTimeZone() {
 		return timeZone;
 	}
 
-	public int getUrlConnectionTimeOut() {
+	public static int getUrlConnectionTimeOut() {
 		return urlConnectionTimeOut;
 	}
 
-	public String getUserAgent() {
+	public static String getUserAgent() {
 		return userAgent;
 	}
 
-	public boolean isEnableDebug() {
+	public static boolean isEnableDebug() {
 		return enableDebug;
 	}
-	
+
 }

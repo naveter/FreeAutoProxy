@@ -11,8 +11,6 @@
  */
 package jGetFreeProxyList;
 
-import java.util.Calendar;
-import java.util.TimeZone;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

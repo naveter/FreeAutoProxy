@@ -1,18 +1,4 @@
-/*
- * jGetFreeProxyList - to get a list of tested free proxies to java program
- * 
- * Permission is granted to copy, distribute and/or
- * modify  this  document under  the  terms  of the
- * GNU General Public License
- * 
- * @author: ilya.gulevskiy
- * @email: mstorage.project@gmail.com
- * @date: 2017
- */
 package com.freeautoproxy.core;
-
-import jGetFreeProxyList.jGetFreeProxyList;
-
 
 /**
  * Control thread to check state of work and inform consumers
@@ -36,7 +22,7 @@ class StateControl extends WorkThread {
             catch(InterruptedException e) {}
         
 			int percGetProxy = jGetFreeProxyList.calcPercentage(
-				Settings.GetProxyUrls.size(), this.Main.GetProxyCounter.get()
+				Settings.getProxyUrls().size(), this.Main.GetProxyCounter.get()
 			);
 			
 			int percTestProxy = jGetFreeProxyList.calcPercentage(
